@@ -19,8 +19,9 @@ import random as rd
 import time
 import requests
 import os
+import urllib3
 os.chdir('d:/')
-
+urllib3.disable_warnings()
 
 # In[2]:
 
@@ -119,11 +120,13 @@ def get_cme_holidays():
                              cme_holidays.at[i,'DATE']+dt.timedelta(days=1)]
                 temp['HOLIDAY']=[cme_holidays.at[i,'HOLIDAY']]*2 
                 
-            cme_holidays=cme_holidays.append(temp)
-            cme_holidays.reset_index(inplace=True,drop=True)
             
-        allholidays=allholidays.append(cme_holidays)
-        allholidays.reset_index(inplace=True,drop=True)
+            cme_holidays = pd.concat([cme_holidays, pd.DataFrame(temp)], ignore_index=True)
+            
+            
+        
+        allholidays = pd.concat([allholidays, pd.DataFrame(cme_holidays)], ignore_index=True)
+        
     
     return allholidays
 
